@@ -19,7 +19,22 @@ SWI3:       .EQU    0x0000
 
     ORG ROM
     LDS #SYSSTACK   ; Initialize system stack
+
+mem_check:
+    LDD #0xFF01     ; A = 0xFF, B = 1
+    LDX #0
+    LDY #FIXEDRAM
+.loop:
+    STA ,Y
+    CMPA ,Y+
+    BNE .done
+    ABX
+    JMP .loop
+.done:
+    STX FIXEDRAM
     
+halt:
+    JMP halt
 
     ORG VECTORADDR
 vectors:
